@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mushiny.workbin.dao.IntTransportOrderMapper">
+
+    <sql id="Base_Column_List">
+    id, order_number, order_type, external_id, external_number, priority, started_date, 
+    finished_date, unit_load_label, confirmed_destination_id, destination_bin_id, source_bin_id, 
+    successor_id, unit_load_id, operator_id, station_id, client_id, warehouse_id, remark, 
+    status, entity_lock, del_flag, version, creator, create_date, updater, update_date
+  </sql>
+    <insert id="insert" parameterType="com.mushiny.workbin.entity.IntTransportOrder">
+    insert into int_transport_order (id, order_number, order_type,
+      external_id, external_number, priority,
+      started_date, finished_date, unit_load_label,
+      confirmed_destination_id, destination_bin_id,
+      source_bin_id, successor_id, unit_load_id,
+      operator_id, station_id, client_id,
+      warehouse_id, remark, status,
+      entity_lock, del_flag, version,
+      creator, create_date, updater,
+      update_date)
+    values (#{id,jdbcType=BIGINT}, #{orderNumber,jdbcType=VARCHAR}, #{orderType,jdbcType=TINYINT},
+      #{externalId,jdbcType=VARCHAR}, #{externalNumber,jdbcType=VARCHAR}, #{priority,jdbcType=TINYINT},
+      #{startedDate,jdbcType=TIMESTAMP}, #{finishedDate,jdbcType=TIMESTAMP}, #{unitLoadLabel,jdbcType=VARCHAR},
+      #{confirmedDestinationId,jdbcType=BIGINT}, #{destinationBinId,jdbcType=BIGINT},
+      #{sourceBinId,jdbcType=BIGINT}, #{successorId,jdbcType=BIGINT}, #{unitLoadId,jdbcType=BIGINT},
+      #{operatorId,jdbcType=BIGINT}, #{stationId,jdbcType=BIGINT}, #{clientId,jdbcType=BIGINT},
+      #{warehouseId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+      #{entityLock,jdbcType=INTEGER}, #{delFlag,jdbcType=TINYINT}, #{version,jdbcType=INTEGER},
+      #{creator,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{updater,jdbcType=BIGINT},
+      #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+    <update id="updateByLabel">
+        update int_transport_order
+        set status = 40
+        where unit_load_label in (
+            <foreach collection="labelList" item = "item" separator=",">
+                #{item}
+            </foreach>
+        )
+
+    </update>
+    <select id="getLastOrder" resultType="com.mushiny.workbin.entity.IntTransportOrder">
+    select * from int_transport_order
+    order by create_date desc limit 1;
+
+  </select>
+    <select id="getListByCond" resultType="com.mushiny.workbin.entity.IntTransportOrder">
+        select distinct to.*,
+        b.code targetStorageCode
+        from int_transport_order to
+        inner join md_storage_bin b on b.id = to.destination_bin_id
+        <where>
+            <if test="orderType !=null and orderType >0">
+                to.order_type = #{orderType}
+            </if>
+            <if test="status!=null and status >0">
+                and to.status =#{status}
+            </if>
+            <if test="label != null and label !=''">
+                and to.unit_load_label =#{label}
+            </if>
+            <if test="null !=labelList and labelList.size()>0">
+                and to.unit_load_label in (
+                    <foreach collection="labelList" item = "item" separator=",">
+                        #{item}
+                    </foreach>
+                )
+            </if>
+        </where>
+
+
+    </select>
+    <select id="getByLabelAndBinCode" resultType="com.mushiny.workbin.entity.IntTransportOrder">
+        select distinct to.*,
+        b.code targetStorageCode
+        from int_transport_order to
+        inner join md_storage_bin b on b.id = to.destination_bin_id
+        where
+        to.unit_load_label =#{label}
+        and b.code =#{binCode}
+        and to.status = 20
+        limit 1;
+    </select>
+</mapper>

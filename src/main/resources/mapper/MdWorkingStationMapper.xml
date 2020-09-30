@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mushiny.workbin.dao.MdWorkingStationMapper" >
+
+  <sql id="Base_Column_List" >
+    id, code, name, usages, usages_type, choose_type, x_coordinate, y_coordinate, entry_point, 
+    x_entry_point, y_entry_point, exit_point, x_exit_point, y_exit_point, stop_point, 
+    working_station_group_id, wcs_workstation_id, orientation, current_usage, section_id, 
+    zone_id, operator_id, min_pods, max_pods, per_pick_time, max_work, stop_allocate_pod, 
+    stop_allocate_order, allow_manual_release, warehouse_id, remark, status, entity_lock, 
+    del_flag, version, creator, create_date, updater, update_date
+  </sql>
+</mapper>

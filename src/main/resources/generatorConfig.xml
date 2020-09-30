@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+    <!DOCTYPE generatorConfiguration 
+      PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+      "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<classPathEntry
+		location="/Users/zhuyc/work/备份/mysql-connector-java-5.1.35.jar" />
+	<context id="mysqlTables" targetRuntime="MyBatis3">
+
+		<commentGenerator>
+			<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/wms_demo"
+			userId="root" password="1234">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="true" />
+			<!-- <property name="useJSR310Types" value="true" /> -->
+		</javaTypeResolver>
+
+		<!-- 生成model模型，对应的包，存放位置可以指定具体的路径,如/ProjectName/src，也可以使用MAVEN来自动生成 -->
+		<javaModelGenerator targetPackage="com.mushiny.workbin.entity"
+			targetProject="../mwms-workbin/src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!--对应的xml mapper文件 -->
+		<sqlMapGenerator targetPackage="src.main.resource.mapper"
+						 targetProject="../mwms-workbin/src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 对应的dao接口 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.mushiny.workbin.dao" targetProject="../mwms-workbin/src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+
+		<!-- 这里是数据库的表名table_user 以及 POJO类的名字User -->
+		<table schema="wms_demo" tableName="inv_unit_load" domainObjectName="InvUnitLoad"
+			enableCountByExample="false" enableSelectByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false">
+		</table>
+		<table schema="wms_demo" tableName="md_product" domainObjectName="MdProduct"
+			enableCountByExample="false" enableSelectByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false">
+		</table>
+		<table schema="wms_demo" tableName="md_rack" domainObjectName="MdRack"
+			enableCountByExample="false" enableSelectByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false">
+		</table>
+		<table schema="wms_demo" tableName="md_storage_bin" domainObjectName="MdStorageBin"
+			enableCountByExample="false" enableSelectByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false">
+		</table>
+		<table schema="wms_demo" tableName="md_working_station" domainObjectName="MdWorkingStation"
+			enableCountByExample="false" enableSelectByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false">
+		</table>
+<!--
+		<table schema="wms_2" tableName="log_file" domainObjectName="file.LogFile"
+			enableCountByExample="false" enableSelectByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false">
+		</table>
+-->
+	</context>
+
+</generatorConfiguration>

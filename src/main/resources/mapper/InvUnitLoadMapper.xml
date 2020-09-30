@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mushiny.workbin.dao.InvUnitLoadMapper" >
+  <sql id="Base_Column_List" >
+    id, label_id, external_id, opened, weight, weight_calculated, weight_measure, stocktaking_date, 
+    unit_load_type_id, carrier, carrier_unit_load_id, product_id, storage_bin_id, client_id, 
+    warehouse_id, remark, status, entity_lock, del_flag, version, creator, create_date, 
+    updater, update_date
+  </sql>
+    <update id="updateByLabel">
+        update inv_unit_load
+        set storage_bin_id = 0
+        where label_id in(
+            <foreach collection="labelList" item="item" separator=",">
+                #{item}
+            </foreach>
+        )
+    </update>
+    <select id="getLabelListOnOutputPod" resultType="com.mushiny.workbin.entity.InvUnitLoad">
+    SELECT DISTINCT
+        ul.*
+    FROM
+        inv_unit_load ul
+    WHERE
+        ul.storage_bin_id IN (
+        SELECT
+            sb.id
+        FROM
+            md_storage_bin sb
+            INNER JOIN md_rack rack ON rack.id = sb.rack_id
+    WHERE
+        rack.CODE = 'P0000150')
+
+    </select>
+    <select id="getListBySku" resultType="com.mushiny.workbin.entity.InvUnitLoad">
+        SELECT DISTINCT
+            ul.*
+        FROM
+            inv_unit_load ul
+            inner join md_product p on p.id = ul.product_id
+        WHERE
+            p.sku = #{sku}
+
+
+
+    </select>
+    <select id="getByLabel" resultType="com.mushiny.workbin.entity.InvUnitLoad">
+        select * from inv_unit_load
+        where label_id = #{label}
+    </select>
+
+</mapper>

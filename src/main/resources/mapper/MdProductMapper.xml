@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mushiny.workbin.dao.MdProductMapper" >
+
+  <sql id="Base_Column_List" >
+    id, code, sku, name, description, picture_name, picture_url, brand_id, product_type_id, 
+    product_group_id, width, height, depth, volume, weight, advice_mandatory, lot_mandatory, 
+    best_before_mandatory, lot_substitution_type, rest_usage_gi, rest_usage_go, best_before_type, 
+    best_before_unit, serial_no_record_type, weight_record_type, shelf_life, safety_stock, 
+    trade_group, default_packaging_unit_id, default_storage_strategy_id, default_unit_load_type_id, 
+    uom_id, zone_id, spu_data, warehouse_id, client_id, remark, status, entity_lock, 
+    del_flag, version, creator, create_date, updater, update_date
+  </sql>
+    <select id="getByCode" resultType="com.mushiny.workbin.entity.MdProduct">
+      select * from md_product
+      where code = #{code}
+
+    </select>
+
+</mapper>

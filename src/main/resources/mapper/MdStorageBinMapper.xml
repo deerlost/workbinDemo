@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mushiny.workbin.dao.MdStorageBinMapper" >
+
+  <sql id="Base_Column_List" >
+    id, code, name, short_name, x_coordinate, y_coordinate, z_coordinate, allocation, 
+    allocation_status, field, field_index, order_index, plc_code, scan_code, stock_taking_date, 
+    storage_bin_type_id, capacity_id, cluster_id, rack_id, area_id, zone_id, section_id, 
+    only_singles, client_id, warehouse_id, remark, status, entity_lock, del_flag, version, 
+    creator, create_date, updater, update_date
+  </sql>
+    <select id="getByCode" resultType="com.mushiny.workbin.entity.MdStorageBin">
+      select * from md_storage_bin
+      where code =#{code}
+    </select>
+    <select id="getAvailableBin" resultType="com.mushiny.workbin.entity.MdStorageBin">
+      select * from md_storage_bin
+      where not exists (
+        select 1 from inv_unit_load ul
+        inner join md_storage_bin sb on sb.id = ul.storage_bin_id
+      )
+    </select>
+
+</mapper>
