@@ -4,6 +4,7 @@ package com.mushiny.workbin.business;
 import com.mushiny.workbin.entity.InvUnitLoad;
 import com.mushiny.workbin.service.InvUnitLoadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -23,7 +24,7 @@ public class SchedulerBusiness {
     @Autowired
     private WcsBusiness wcsBusiness;
 
-
+    @Scheduled(fixedDelay = 1000 * 10)
     public void callToOutput() {
         List<InvUnitLoad> unitLoadList = unitLoadService.getLabelListOnOutputPod();
 
@@ -32,7 +33,7 @@ public class SchedulerBusiness {
         }
     }
 
-
+    @Scheduled(cron = "0 0 0/1 * * ?")
     public void updateStorageInfo() {
         try {
             wcsBusiness.queryBinInfo();

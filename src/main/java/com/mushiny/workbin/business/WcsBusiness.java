@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mushiny.workbin.entity.IntTransportOrder;
 import com.mushiny.workbin.entity.MdStorageBin;
+import com.mushiny.workbin.exception.WMSException;
 import com.mushiny.workbin.service.MdStorageBinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class WcsBusiness {
         try {
             message = this.getForObject(this.updateBinUrl + "?binCode={binCode}&toteCode={toteCode}", paramMap);
 
-        } catch (Exception e) {
+        } catch (WMSException e) {
             log.info(" !!!!!!!!!!!!!  修改货位料箱 bin ={},label = {} 失败 ，异常", binCode, label, e);
             throw e;
         }
@@ -62,15 +63,15 @@ public class WcsBusiness {
 
     }
 
-    public String queryBinInfo() throws Exception {
+    public String queryBinInfo() throws WMSException {
         String message = null;
         try {
             message = this.getForObject(this.queryBinListUrl + "?side=&aisle=&line=&column=&row=&binCode=", new HashMap());
 
             if (StringUtils.isEmpty(message)) {
-                throw new Exception("查询货位信息 失败");
+                throw new WMSException("查询货位信息 失败");
             }
-        } catch (Exception e) {
+        } catch (WMSException e) {
             log.info(" !!!!!!!!!!!!!  查询货位信息 失败 ，异常", e);
             throw e;
         }
@@ -97,9 +98,9 @@ public class WcsBusiness {
      *
      * @param type
      * @param orderList
-     * @throws Exception
+     * @throws WMSException
      */
-    public void callLabel(String type, List<IntTransportOrder> orderList) throws Exception {
+    public void callLabel(String type, List<IntTransportOrder> orderList) throws WMSException {
         JSONArray jsonArray = new JSONArray();
 
         for (IntTransportOrder order : orderList) {
@@ -123,10 +124,10 @@ public class WcsBusiness {
 
             if (StringUtils.isEmpty(message)) {
                 log.info(" !!!!!!!!!!!!!  呼叫料箱 类型 ={} ，失败  ,参数label :{}", type, orderList.stream().map(IntTransportOrder::getUnitLoadLabel).collect(Collectors.toList()).toString());
-                throw new Exception("呼叫料箱失败");
+                throw new WMSException("呼叫料箱失败");
             }
 
-        } catch (Exception e) {
+        } catch (WMSException e) {
             log.info(" !!!!!!!!!!!!!  呼叫料箱 类型 ={} ，异常", type, e);
             throw e;
         }

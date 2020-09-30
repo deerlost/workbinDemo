@@ -3,6 +3,7 @@ package com.mushiny.workbin.application;
 
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
 import com.mushiny.workbin.entity.InvUnitLoad;
+import com.mushiny.workbin.exception.WMSException;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public interface WorkBinAppService {
 
-    List<InvUnitLoad> getLabelList(String sku) throws Exception;
+    List<InvUnitLoad> getLabelList(String sku) throws WMSException;
 
     /**
      * 创建任务
@@ -22,22 +23,22 @@ public interface WorkBinAppService {
      * @param type 1入库 2出库
      * @param record
      * @return
-     * @throws Exception
+     * @throws WMSException
      */
-    int createTask(int type ,WorkBinTaskDTO record) throws Exception;
+    int createTask(int type ,WorkBinTaskDTO record) throws WMSException;
 
     /**
      * 获取出库信息
      *
      * @param label
      * @return
-     * @throws Exception
+     * @throws WMSException
      */
-    WorkBinTaskDTO getTaskForOutput(String label) throws Exception;
+    WorkBinTaskDTO getTaskForOutput(String label) throws WMSException;
 
-    int output(List<String> labelList) throws Exception;
+    int output(String labels) throws WMSException;
 
-    int input(List<String> labelList) throws Exception;
+    int input(String labels) throws WMSException;
 
 
 }

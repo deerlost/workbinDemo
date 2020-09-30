@@ -38,15 +38,15 @@ public class WorkBinController {
     }
 
     /**
-     * 入库 呼叫机器人
+     * 入库 呼叫
      *
-     * @param labelList
+     * @param labels
      * @return
      * @throws Exception
      */
-    @PostMapping("/input")
-    public int input(@RequestBody List<String> labelList) throws Exception {
-        return workBinAppService.input(labelList);
+    @GetMapping("/input")
+    public int input(@RequestParam("labels") String labels) throws Exception {
+        return workBinAppService.input(labels);
     }
 
     /**
@@ -74,6 +74,7 @@ public class WorkBinController {
     }
 
     /**
+     * 查询出库任务
      * @param label
      * @return
      * @throws Exception
@@ -86,13 +87,13 @@ public class WorkBinController {
     /**
      * 出库
      *
-     * @param labelList
+     * @param labels
      * @return
      * @throws Exception
      */
-    @PostMapping("/output")
-    public int output(@RequestBody List<String> labelList) throws Exception {
-        return workBinAppService.output(labelList);
+    @GetMapping("/output")
+    public int output(@RequestParam("labels") String labels) throws Exception {
+        return workBinAppService.output(labels);
     }
 
 

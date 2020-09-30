@@ -46,22 +46,23 @@
 
   </select>
     <select id="getListByCond" resultType="com.mushiny.workbin.entity.IntTransportOrder">
-        select distinct to.*,
+        select distinct
+        t.*,
         b.code targetStorageCode
-        from int_transport_order to
-        inner join md_storage_bin b on b.id = to.destination_bin_id
+        from int_transport_order t
+        inner join md_storage_bin b on b.id = t.destination_bin_id
         <where>
             <if test="orderType !=null and orderType >0">
-                to.order_type = #{orderType}
+                t.order_type = #{orderType}
             </if>
             <if test="status!=null and status >0">
-                and to.status =#{status}
+                and t.status =#{status}
             </if>
             <if test="label != null and label !=''">
-                and to.unit_load_label =#{label}
+                and t.unit_load_label =#{label}
             </if>
             <if test="null !=labelList and labelList.size()>0">
-                and to.unit_load_label in (
+                and t.unit_load_label in (
                     <foreach collection="labelList" item = "item" separator=",">
                         #{item}
                     </foreach>
@@ -72,14 +73,14 @@
 
     </select>
     <select id="getByLabelAndBinCode" resultType="com.mushiny.workbin.entity.IntTransportOrder">
-        select distinct to.*,
+        select distinct t.*,
         b.code targetStorageCode
-        from int_transport_order to
-        inner join md_storage_bin b on b.id = to.destination_bin_id
+        from int_transport_order t
+        inner join md_storage_bin b on b.id = t.destination_bin_id
         where
-        to.unit_load_label =#{label}
+        t.unit_load_label =#{label}
         and b.code =#{binCode}
-        and to.status = 20
+        and t.status = 20
         limit 1;
     </select>
 </mapper>
