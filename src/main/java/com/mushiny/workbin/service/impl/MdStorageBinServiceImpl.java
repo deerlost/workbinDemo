@@ -8,6 +8,7 @@ import com.mushiny.workbin.service.MdStorageBinService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -23,7 +24,7 @@ public class MdStorageBinServiceImpl extends ServiceImpl<MdStorageBinMapper, MdS
     }
 
     @Override
-    public List<MdStorageBin> getAvailableBin() {
-        return baseMapper.getAvailableBin();
+    public List<MdStorageBin> getAvailableBin(Map<String,Object> param) {
+        return baseMapper.getAvailableBin(param);
     }
 }

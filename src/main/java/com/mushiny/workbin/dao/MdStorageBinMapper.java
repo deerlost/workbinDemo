@@ -6,12 +6,13 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MdStorageBinMapper extends BaseMapper<MdStorageBin> {
     MdStorageBin getByCode(@Param("code") String code);
 
-    List<MdStorageBin> getAvailableBin();
+    List<MdStorageBin> getAvailableBin(Map<String,Object> param);
 
 
 }

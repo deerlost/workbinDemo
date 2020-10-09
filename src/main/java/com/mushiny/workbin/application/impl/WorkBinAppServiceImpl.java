@@ -59,7 +59,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
 
     @Override
     @Transactional(rollbackFor = WMSException.class)
-    public int createTask(int type ,WorkBinTaskDTO record) throws WMSException {
+    public WorkBinTaskDTO createTask(int type ,WorkBinTaskDTO record) throws WMSException {
         String orderNumber = null;
 
         IntTransportOrder lastOrder = transportOrderService.getLastOrder();
@@ -80,14 +80,13 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
             throw new WMSException("料箱信息为空");
         }
         order.setUnitLoadLabel(record.getLabel());
-
+        Map<String,Object> param = new HashMap<>();
         if (type == 1) {
             order.setOrderType(OrderTypeEnum.GOODS_IN.getValue());
             MdStorageBin bin = storageBinService.getByCode(record.getStorageCode());
             if (ObjectUtils.isEmpty(bin)) {
                 throw new WMSException("库位信息为空");
             }
-            order.setSourceBinId(bin.getId());
 
             MdProduct product = productService.getByCode(record.getProductCode());
             if (ObjectUtils.isEmpty(product)) {
@@ -97,7 +96,9 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
             load.setStorageBinId(bin.getId());
             unitLoadService.updateById(load);
 
-            List<MdStorageBin> availableBin = storageBinService.getAvailableBin();
+
+            param.put("binType",10000);
+            List<MdStorageBin> availableBin = storageBinService.getAvailableBin(param);
             if (CollectionUtils.isEmpty(availableBin)) {
                 throw new WMSException("无可用的库位");
             }
@@ -108,12 +109,19 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
             order.setOrderType(OrderTypeEnum.GOODS_OUT.getValue());
             order.setSourceBinId(load.getStorageBinId());
             order.setExternalId(record.getPoint());
+            //TODO target bin
+            param.put("binType",10000);
+            List<MdStorageBin> availableBin = storageBinService.getAvailableBin(param);
+            if (CollectionUtils.isEmpty(availableBin)) {
+                throw new WMSException("无可用的库位");
+            }
+            order.setDestinationBinId(availableBin.get(0).getId());
         }
 
         order.setStatus(OrderStatusEnum.CREATE.getValue());
         transportOrderService.save(order);
 
-        return 0;
+        return record;
     }
 
     @Override

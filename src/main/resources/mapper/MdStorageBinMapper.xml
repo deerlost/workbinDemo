@@ -19,6 +19,9 @@
         select 1 from inv_unit_load ul
         inner join md_storage_bin sb on sb.id = ul.storage_bin_id
       )
+      <if test="binType !=null and binType >0">
+        and storage_bin_type_id = #{binType}
+      </if>
     </select>
 
 </mapper>

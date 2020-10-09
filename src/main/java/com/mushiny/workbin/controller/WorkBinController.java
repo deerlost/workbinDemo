@@ -33,7 +33,7 @@ public class WorkBinController {
      * @throws Exception
      */
     @PostMapping("/createInput")
-    public int createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
+    public WorkBinTaskDTO createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
         return workBinAppService.createTask(1, record);
     }
 
@@ -69,7 +69,7 @@ public class WorkBinController {
      * @throws Exception
      */
     @PostMapping("/createOutput")
-    public int createOutput(@RequestBody WorkBinTaskDTO record) throws Exception {
+    public WorkBinTaskDTO createOutput(@RequestBody WorkBinTaskDTO record) throws Exception {
         return workBinAppService.createTask(2, record);
     }
 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mushiny.workbin.entity.MdStorageBin;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -16,5 +17,6 @@ public interface MdStorageBinService extends IService<MdStorageBin> {
 
     MdStorageBin getByCode(String code);
 
-    List<MdStorageBin> getAvailableBin();
+    List<MdStorageBin> getAvailableBin(Map<String,Object> param);
+
 }

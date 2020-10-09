@@ -25,7 +25,7 @@ public interface WorkBinAppService {
      * @return
      * @throws WMSException
      */
-    int createTask(int type ,WorkBinTaskDTO record) throws WMSException;
+    WorkBinTaskDTO createTask(int type ,WorkBinTaskDTO record) throws WMSException;
 
     /**
      * 获取出库信息
