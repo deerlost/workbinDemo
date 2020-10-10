@@ -1,6 +1,7 @@
 package com.mushiny.workbin.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mushiny.workbin.dto.InvUnitLoadDTO;
 import com.mushiny.workbin.entity.InvUnitLoad;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,7 +13,7 @@ public interface InvUnitLoadMapper extends BaseMapper<InvUnitLoad> {
 
     List<InvUnitLoad> getLabelListOnOutputPod();
 
-    List<InvUnitLoad> getListBySku(@Param("sku") String sku);
+    List<InvUnitLoadDTO> getListBySku(@Param("sku") String sku);
 
     InvUnitLoad getByLabel(@Param("label")String label);
 

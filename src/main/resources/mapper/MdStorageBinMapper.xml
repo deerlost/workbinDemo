@@ -14,13 +14,15 @@
       where code =#{code}
     </select>
     <select id="getAvailableBin" resultType="com.mushiny.workbin.entity.MdStorageBin">
-      select * from md_storage_bin
-      where not exists (
-        select 1 from inv_unit_load ul
-        inner join md_storage_bin sb on sb.id = ul.storage_bin_id
-      )
+      SELECT
+      b.*
+      FROM
+      md_storage_bin b
+      WHERE
+      NOT EXISTS ( SELECT DISTINCT sb.* FROM inv_unit_load ul WHERE b.id = ul.storage_bin_id )
+      AND NOT EXISTS ( SELECT DISTINCT sb.* FROM int_transport_order o WHERE b.id = o.destination_bin_id and o.status != 30 )
       <if test="binType !=null and binType >0">
-        and storage_bin_type_id = #{binType}
+        AND b.storage_bin_type_id = #{binType}
       </if>
     </select>
 

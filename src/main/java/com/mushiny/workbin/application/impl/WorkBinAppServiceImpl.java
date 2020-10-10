@@ -3,6 +3,7 @@ package com.mushiny.workbin.application.impl;
 
 import com.mushiny.workbin.application.WorkBinAppService;
 import com.mushiny.workbin.business.WcsBusiness;
+import com.mushiny.workbin.dto.InvUnitLoadDTO;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
 import com.mushiny.workbin.entity.IntTransportOrder;
 import com.mushiny.workbin.entity.InvUnitLoad;
@@ -16,7 +17,6 @@ import com.mushiny.workbin.service.IntTransportOrderService;
 import com.mushiny.workbin.service.InvUnitLoadService;
 import com.mushiny.workbin.service.MdProductService;
 import com.mushiny.workbin.service.MdStorageBinService;
-import org.omg.CORBA.ORB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +53,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
 
 
     @Override
-    public List<InvUnitLoad> getLabelList(String sku) throws WMSException {
+    public List<InvUnitLoadDTO> getLabelList(String sku) throws WMSException {
         return unitLoadService.getListBySku(sku);
     }
 
@@ -97,14 +97,14 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
             unitLoadService.updateById(load);
 
 
-            param.put("binType",10000);
+            param.put("binType",20000);
             List<MdStorageBin> availableBin = storageBinService.getAvailableBin(param);
             if (CollectionUtils.isEmpty(availableBin)) {
                 throw new WMSException("无可用的库位");
             }
             order.setDestinationBinId(availableBin.get(0).getId());
             //TODO 调用wcs 修改货位料箱接口
-            wcsBusiness.wcsUpdateBin(availableBin.get(0).getCode(),record.getLabel());
+         //   wcsBusiness.wcsUpdateBin(availableBin.get(0).getCode(),record.getLabel());
         }else{
             order.setOrderType(OrderTypeEnum.GOODS_OUT.getValue());
             order.setSourceBinId(load.getStorageBinId());

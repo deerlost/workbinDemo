@@ -3,15 +3,13 @@ package com.mushiny.workbin.controller;
 
 import com.mushiny.workbin.application.WorkBinAppService;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
-import com.mushiny.workbin.entity.InvUnitLoad;
+import com.mushiny.workbin.exception.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @Description TODO
@@ -33,8 +31,8 @@ public class WorkBinController {
      * @throws Exception
      */
     @PostMapping("/createInput")
-    public WorkBinTaskDTO createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
-        return workBinAppService.createTask(1, record);
+    public Result createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
+        return new Result<>().ok(workBinAppService.createTask(1, record));
     }
 
     /**
@@ -45,8 +43,8 @@ public class WorkBinController {
      * @throws Exception
      */
     @GetMapping("/input")
-    public int input(@RequestParam("labels") String labels) throws Exception {
-        return workBinAppService.input(labels);
+    public Result input(@RequestParam("labels") String labels) throws Exception {
+        return new Result<>().ok(workBinAppService.input(labels));
     }
 
     /**
@@ -57,8 +55,8 @@ public class WorkBinController {
      * @throws Exception
      */
     @GetMapping("/getLabel")
-    public List<InvUnitLoad> getLabel(@RequestParam("sku") String sku) throws Exception {
-        return workBinAppService.getLabelList(sku);
+    public Result getLabel(@RequestParam("sku") String sku) throws Exception {
+        return new Result<>().ok(workBinAppService.getLabelList(sku));
     }
 
     /**
@@ -69,19 +67,20 @@ public class WorkBinController {
      * @throws Exception
      */
     @PostMapping("/createOutput")
-    public WorkBinTaskDTO createOutput(@RequestBody WorkBinTaskDTO record) throws Exception {
-        return workBinAppService.createTask(2, record);
+    public Result createOutput(@RequestBody WorkBinTaskDTO record) throws Exception {
+        return new Result<>().ok(workBinAppService.createTask(2, record));
     }
 
     /**
      * 查询出库任务
+     *
      * @param label
      * @return
      * @throws Exception
      */
     @GetMapping("/getOutputInfo")
-    public WorkBinTaskDTO getInfo(@RequestParam("label") String label) throws Exception {
-        return workBinAppService.getTaskForOutput(label);
+    public Result getInfo(@RequestParam("label") String label) throws Exception {
+        return new Result<>().ok(workBinAppService.getTaskForOutput(label));
     }
 
     /**
@@ -92,8 +91,8 @@ public class WorkBinController {
      * @throws Exception
      */
     @GetMapping("/output")
-    public int output(@RequestParam("labels") String labels) throws Exception {
-        return workBinAppService.output(labels);
+    public Result output(@RequestParam("labels") String labels) throws Exception {
+        return new Result<>().ok(workBinAppService.output(labels));
     }
 
 

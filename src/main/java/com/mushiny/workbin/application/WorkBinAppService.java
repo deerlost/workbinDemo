@@ -1,8 +1,8 @@
 package com.mushiny.workbin.application;
 
 
+import com.mushiny.workbin.dto.InvUnitLoadDTO;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
-import com.mushiny.workbin.entity.InvUnitLoad;
 import com.mushiny.workbin.exception.WMSException;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface WorkBinAppService {
 
-    List<InvUnitLoad> getLabelList(String sku) throws WMSException;
+    List<InvUnitLoadDTO> getLabelList(String sku) throws WMSException;
 
     /**
      * 创建任务

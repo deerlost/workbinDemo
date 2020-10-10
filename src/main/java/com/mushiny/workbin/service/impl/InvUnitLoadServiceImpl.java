@@ -3,6 +3,7 @@ package com.mushiny.workbin.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mushiny.workbin.dao.InvUnitLoadMapper;
+import com.mushiny.workbin.dto.InvUnitLoadDTO;
 import com.mushiny.workbin.entity.InvUnitLoad;
 import com.mushiny.workbin.service.InvUnitLoadService;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class InvUnitLoadServiceImpl extends ServiceImpl<InvUnitLoadMapper, InvUn
     }
 
     @Override
-    public List<InvUnitLoad> getListBySku(String sku) {
+    public List<InvUnitLoadDTO> getListBySku(String sku) {
         return baseMapper.getListBySku(sku);
     }
 
