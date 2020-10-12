@@ -18,9 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(WMSException.class)
-    public Result handleWmsException(WMSException ex) {
+    @ResponseBody
+    public <T> Result<?> defultExcepitonHandler(HttpServletRequest request, WMSException e) {
+        e.printStackTrace();
         Result result = new Result();
-        result.error(ex.getCode(), ex.getMsg());
+        result.error(e.getCode(), e.getMsg());
         return result;
     }
 

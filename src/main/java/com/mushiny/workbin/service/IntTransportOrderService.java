@@ -23,4 +23,6 @@ public interface IntTransportOrderService extends IService<IntTransportOrder> {
 
     IntTransportOrder getByLabelAndBinCode(String label, String binCode);
 
+    int updateStatus(IntTransportOrder order);
+
 }

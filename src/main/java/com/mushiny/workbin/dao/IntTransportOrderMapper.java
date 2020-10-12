@@ -16,4 +16,7 @@ public interface IntTransportOrderMapper extends BaseMapper<IntTransportOrder> {
     void updateByLabel(List<String> labelList);
 
     IntTransportOrder getByLabelAndBinCode(String label, String binCode);
+
+    int updateStatus(IntTransportOrder order);
+
 }

@@ -40,6 +40,11 @@
         )
 
     </update>
+    <update id="updateStatus">
+        update int_transport_order
+        set status =#{status}
+        where id = #{id}
+    </update>
     <select id="getLastOrder" resultType="com.mushiny.workbin.entity.IntTransportOrder">
     select * from int_transport_order
     order by create_date desc limit 1;

@@ -1,5 +1,7 @@
 package com.mushiny.workbin.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.util.Date;
 
 public class IntTransportOrder extends BaseEntity{
@@ -37,8 +39,9 @@ public class IntTransportOrder extends BaseEntity{
 
 
     /*************  扩展字段 ***************/
+    @TableField(exist = false)
     private String targetStorageCode;
-
+    @TableField(exist = false)
     private String sourceStorageCode;
 
     public String getSourceStorageCode() {

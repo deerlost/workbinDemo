@@ -2,6 +2,7 @@ package com.mushiny.workbin.controller;
 
 
 import com.mushiny.workbin.application.WorkBinAppService;
+import com.mushiny.workbin.business.SchedulerBusiness;
 import com.mushiny.workbin.business.WcsBusiness;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
 import com.mushiny.workbin.exception.Result;
@@ -25,6 +26,8 @@ public class WorkBinController {
     private WorkBinAppService workBinAppService;
     @Autowired
     WcsBusiness wcsBusiness;
+    @Autowired
+    SchedulerBusiness schedulerBusiness;
 
     /**
      * 入库绑定库位
@@ -97,9 +100,8 @@ public class WorkBinController {
     public Result output(@RequestParam("labels") String labels) throws Exception {
         return new Result<>().ok(workBinAppService.output(labels));
     }
+
     /**
-     *
-     *
      * @return
      * @throws Exception
      */
@@ -108,6 +110,14 @@ public class WorkBinController {
         return new Result<>().ok(wcsBusiness.queryBinInfo());
     }
 
+    /**
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/callOutput")
+    public void call() throws Exception {
+        schedulerBusiness.callToOutput();
+    }
 
 
 }

@@ -89,6 +89,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
             }
 
             order.setSourceBinId(bin.getId());
+            order.setSourceStorageCode(bin.getCode());
             MdProduct product = productService.getByCode(record.getProductCode());
             if (ObjectUtils.isEmpty(product)) {
                 throw new WMSException("商品信息为空");
@@ -125,7 +126,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
 
         IntTransportOrder t = transportOrderService.getByLabelAndBinCode(record.getLabel(), order.getTargetStorageCode());
         if(!ObjectUtils.isEmpty(t)){
-            throw new WMSException("该料箱到目标库位已有任务，无法创建");
+            throw new WMSException("该料箱已有任务，无法创建");
         }
         transportOrderService.save(order);
 

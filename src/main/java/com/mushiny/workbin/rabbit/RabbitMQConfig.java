@@ -40,7 +40,7 @@ public class RabbitMQConfig {
 		return template;
 	}
 
-	/*@Bean
+	@Bean
 	public RabbitListenerContainerFactory<SimpleMessageListenerContainer> highPerformance(ConnectionFactory rabbitConnectionFactory) {
 		SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
 		factory.setConnectionFactory(rabbitConnectionFactory);
@@ -50,5 +50,5 @@ public class RabbitMQConfig {
 		factory.setConcurrentConsumers(15);
 		factory.setAcknowledgeMode(AcknowledgeMode.NONE);
 		return factory;
-	}*/
+	}
 }

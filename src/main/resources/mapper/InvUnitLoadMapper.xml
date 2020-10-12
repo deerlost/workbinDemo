@@ -9,7 +9,8 @@
   </sql>
     <update id="updateByLabel">
         update inv_unit_load
-        set storage_bin_id = 0
+        set storage_bin_id = 0 ,
+        product_id = 0
         where label_id in(
             <foreach collection="labelList" item="item" separator=",">
                 #{item}
@@ -27,9 +28,8 @@
             sb.id
         FROM
             md_storage_bin sb
-            INNER JOIN md_rack rack ON rack.id = sb.rack_id
-    WHERE
-        rack.CODE = 'P0000150')
+            where sb.storage_bin_type_id = 10000
+   )
 
     </select>
     <select id="getListBySku" resultType="com.mushiny.workbin.dto.InvUnitLoadDTO">

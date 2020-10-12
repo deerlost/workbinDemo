@@ -37,4 +37,9 @@ public class IntTransportOrderServiceImpl extends ServiceImpl<IntTransportOrderM
     public IntTransportOrder getByLabelAndBinCode(String label, String binCode) {
         return baseMapper.getByLabelAndBinCode(label,binCode);
     }
+
+    @Override
+    public int updateStatus(IntTransportOrder order) {
+        return baseMapper.updateStatus(order);
+    }
 }

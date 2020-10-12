@@ -23,6 +23,7 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Map;
 
@@ -43,9 +44,9 @@ public class ReceiveMsg {
     @Autowired
     private MdStorageBinService storageBinService;
 
-    @RabbitListener(containerFactory = "rabbitListenerContainerFactory",
+    @RabbitListener(containerFactory = "highPerformance",
             bindings = @QueueBinding(value = @Queue(value = RabbitConfigure.WCS_TASK_STATUS_CHANGE_QUEUE,
-                    durable = "true", autoDelete = "true"),
+                    durable = "true", autoDelete = "false"),
                     exchange = @Exchange(value = RabbitConfigure.WCS_TASK_STATUS_CHANGE_EXCHANGE, type = ExchangeTypes.TOPIC),
                     key = RabbitConfigure.WCS_TASK_STATUS_CHANGE_KEY))
     public void receiveMsgContent(Message msg) {
@@ -58,7 +59,7 @@ public class ReceiveMsg {
 
         IntTransportOrder order = transportOrderService.getByLabelAndBinCode(change.getToteCode(), change.getBinCode());
 
-        if (change.getStepTaskStatus().equalsIgnoreCase("Finished")) {
+        if (change.getStepTaskStatus().equalsIgnoreCase("Finished") && !ObjectUtils.isEmpty(order)) {
 
             InvUnitLoad unitLoad = unitLoadService.getByLabel(order.getUnitLoadLabel());
             unitLoad.setStorageBinId(order.getDestinationBinId());
@@ -67,7 +68,7 @@ public class ReceiveMsg {
             order.setStatus(OrderStatusEnum.COMPLETE.getValue());
 
             //TODO 判断出入库类型 是否推送给netty
-            transportOrderService.updateById(order);
+            transportOrderService.updateStatus(order);
 
             if (order.getOrderType().equals(OrderTypeEnum.GOODS_OUT.getValue())) {
 
