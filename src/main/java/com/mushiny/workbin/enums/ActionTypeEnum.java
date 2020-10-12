@@ -8,5 +8,5 @@ package com.mushiny.workbin.enums;
  * @date：2020/9/29
  */
 public enum ActionTypeEnum {
-    TOTE_RAKE_PUT, TOTE_RAKE_FETCH;
+    PUT, FETCH;
 }

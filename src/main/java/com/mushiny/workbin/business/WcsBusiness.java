@@ -6,10 +6,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mushiny.workbin.entity.IntTransportOrder;
 import com.mushiny.workbin.entity.MdStorageBin;
+import com.mushiny.workbin.enums.ActionTypeEnum;
 import com.mushiny.workbin.exception.WMSException;
 import com.mushiny.workbin.service.MdStorageBinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -37,14 +39,19 @@ public class WcsBusiness {
     @Autowired
     private MdStorageBinService storageBinService;
 
+    @Value("${wcs.updateBinUrl}")
     private String updateBinUrl;
 
+    @Value("${wcs.callToteUrl}")
     private String callToteUrl;
 
+    @Value("${wcs.queryBinListUrl}")
     private String queryBinListUrl;
 
+    @Value("${wcs.token}")
     private String token;
 
+    @Value("${wcs.sectionId}")
     private String sectionId;
 
     public String wcsUpdateBin(String binCode, String label) {
@@ -76,17 +83,21 @@ public class WcsBusiness {
             throw e;
         }
 
-        JSONArray array = JSON.parseArray(message);
-        for (int i = 0; i < array.size(); i++) {
-            JSONObject obj = (JSONObject) array.get(i);
-            MdStorageBin bin = storageBinService.getByCode(obj.getString("code"));
-            if (ObjectUtils.isEmpty(bin)) {
-                //TODO 保存storage信息
-                MdStorageBin entity = new MdStorageBin();
-                entity.setCode(obj.getString("code"));
-                storageBinService.save(entity);
-            }
+        JSONObject object = JSON.parseObject(message);
+        JSONArray array = object.getJSONArray("data");
+        if(array.size()>0){
+            for (int i = 0; i < array.size(); i++) {
+                JSONObject obj = (JSONObject) array.get(i);
+                MdStorageBin bin = storageBinService.getByCode(obj.getString("code"));
+                if (ObjectUtils.isEmpty(bin)) {
+                    //TODO 保存storage信息
+                    MdStorageBin entity = new MdStorageBin();
+                    entity.setCode(obj.getString("code"));
+                    entity.setName(obj.getString("code"));
+                    storageBinService.save(entity);
+                }
 
+            }
         }
 
         return message;
@@ -96,26 +107,35 @@ public class WcsBusiness {
     /**
      * 呼叫料箱
      *
-     * @param type
      * @param orderList
      * @throws WMSException
      */
-    public void callLabel(String type, List<IntTransportOrder> orderList) throws WMSException {
+    public void callLabel(List<IntTransportOrder> orderList) throws WMSException {
         JSONArray jsonArray = new JSONArray();
 
         for (IntTransportOrder order : orderList) {
-            JSONObject obj = new JSONObject();
-            obj.put("toteAGVTaskActionType", type);
+            JSONObject fetch = new JSONObject();
+            fetch.put("toteAGVTaskActionType", ActionTypeEnum.FETCH.name());
             JSONObject son = new JSONObject();
             son.put("toteCode", order.getUnitLoadLabel());
             son.put("weight", "");
             son.put("toteType", "");
-            obj.put("toteInfoDTO", son);
-            obj.put("binCode", order.getTargetStorageCode());
-            jsonArray.add(obj);
+            fetch.put("toteInfoDTO", son);
+            fetch.put("binCode", order.getSourceStorageCode());
+            jsonArray.add(fetch);
+
+            JSONObject put = new JSONObject();
+            put.put("toteAGVTaskActionType", ActionTypeEnum.PUT.name());
+            JSONObject sonf = new JSONObject();
+            sonf.put("toteCode", order.getUnitLoadLabel());
+            sonf.put("weight", "");
+            sonf.put("toteType", "");
+            put.put("toteInfoDTO", sonf);
+            put.put("binCode", order.getTargetStorageCode());
+            jsonArray.add(put);
         }
 
-        Map<String, Object> param = new HashMap<>();
+        JSONObject param = new JSONObject();
         param.put("toteAGVTaskActionDTOS", jsonArray);
         String message = "";
 
@@ -123,20 +143,21 @@ public class WcsBusiness {
             message = this.postForObject(this.callToteUrl, param.toString());
 
             if (StringUtils.isEmpty(message)) {
-                log.info(" !!!!!!!!!!!!!  呼叫料箱 类型 ={} ，失败  ,参数label :{}", type, orderList.stream().map(IntTransportOrder::getUnitLoadLabel).collect(Collectors.toList()).toString());
+                log.info(" !!!!!!!!!!!!!  呼叫料箱 类型 ={} ，失败  ,参数label :{}", "put", orderList.stream().map(IntTransportOrder::getUnitLoadLabel).collect(Collectors.toList()).toString());
                 throw new WMSException("呼叫料箱失败");
             }
 
         } catch (WMSException e) {
-            log.info(" !!!!!!!!!!!!!  呼叫料箱 类型 ={} ，异常", type, e);
+            log.info(" !!!!!!!!!!!!!  呼叫料箱 类型 ={} ，异常", "type", e);
             throw e;
         }
 
+        JSONObject result  = JSON.parseObject(message);
 
     }
 
     private String postForObject(String url, String params) {
-        log.info("url : {} , 参数是 {]", url, params);
+        log.info("url : {} , 参数是 {}", url, params);
 
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
@@ -151,7 +172,7 @@ public class WcsBusiness {
     }
 
     private String getForObject(String url, Map params) {
-        log.info("url : {} , 参数是 {]", url, params.toString());
+        log.info("url : {} , 参数是 {}", url, params.toString());
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
         headers.setContentType(type);

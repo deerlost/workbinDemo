@@ -17,12 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public <T> Result<?> defultExcepitonHandler(HttpServletRequest request, WMSException e) {
-        e.printStackTrace();
+    @ExceptionHandler(WMSException.class)
+    public Result handleWmsException(WMSException ex) {
         Result result = new Result();
-        result.error(e.getCode(), e.getMsg());
+        result.error(ex.getCode(), ex.getMsg());
         return result;
     }
 

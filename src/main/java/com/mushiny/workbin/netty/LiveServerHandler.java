@@ -1,6 +1,7 @@
 package com.mushiny.workbin.netty;
 
 
+import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -49,27 +50,23 @@ public class LiveServerHandler extends SimpleChannelInboundHandler<String> {
         final int hashCode = channel.hashCode();
         Map<String, Channel> channelCache = LiveChannnelHolder.getChannelCache();
 
-        // logger.info("channel hashCode:" + hashCode + " msg:" + msg + " cache:" + channelCache.size());
+        logger.info("channel hashCode:" + hashCode + " msg:" + msg + " cache:" + channelCache.size());
 
         if (!channelCache.containsKey(temp) && !temp.equals("")) {
             //  logger.info("channelCache.containsKey(hashCode), put key:" + hashCode);
-            channel.closeFuture().addListener(future -> {
+           /* channel.closeFuture().addListener(future -> {
                 logger.info("channel close, remove key:" + temp);
                 LiveChannnelHolder.remove(temp);
-            });
+            });*/
             LiveChannnelHolder.add(temp, ctx.channel());
-
-            // Channel currentChannel = channelCache.get(msg);
-            // currentChannel.writeAndFlush(msg);
+            Channel currentChannel = channelCache.get(temp);
+            JSONObject result = new JSONObject();
+            result.put("msg","1");
+            currentChannel.writeAndFlush(result);
+            logger.info("发送信息 ：{}" ,result.toString());
         } else {
-           /* Channel currentChannel = channelCache.get(temp);
-            String userCode = LiveChannnelHolder.get(channel);
-            if (null != userCode && !userCode.equals("")) {
-                SysUser sysUser = userDao.selectByUserCode(userCode);
-                String type = indexServiceSubImpl.pushMassage(sysUser.getUserId().toString());
-                currentChannel.writeAndFlush(type);
-            }*/
-
+            Channel currentChannel = channelCache.get(temp);
+            currentChannel.writeAndFlush("msg");
         }
 
     }
@@ -77,20 +74,30 @@ public class LiveServerHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-
+        Map<String, Channel> channelCache = LiveChannnelHolder.getChannelCache();
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             String type = "";
             if (event.state() == IdleState.READER_IDLE) {
                 type = "read idle";
+                Channel channel = ctx.channel();
+                JSONObject result = new JSONObject();
+                result.put("msg","1");
+                channel.writeAndFlush(result);
+                channel.close();
+                System.out.println("channel 关闭后");
             } else if (event.state() == IdleState.WRITER_IDLE) {
                 type = "write idle";
             } else if (event.state() == IdleState.ALL_IDLE) {
                 type = "all idle";
+                System.out.println("channel 读写空闲, 准备关闭当前channel  , 当前UsersChanel的数量: "+channelCache.keySet().size());
+                Channel channel = ctx.channel();
+                channel.close();
+                System.out.println("channel 关闭后");
             }
-            //logger.info(ctx.channel().remoteAddress() + "超时类型：" + type);
-            //   ctx.writeAndFlush(type);
-
+            logger.info(ctx.channel().remoteAddress() + "超时类型：" + type);
+            ctx.fireChannelRead(type);
+            ctx.writeAndFlush(type);
         } else {
             super.userEventTriggered(ctx, evt);
         }

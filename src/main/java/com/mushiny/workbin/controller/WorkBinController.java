@@ -2,6 +2,7 @@ package com.mushiny.workbin.controller;
 
 
 import com.mushiny.workbin.application.WorkBinAppService;
+import com.mushiny.workbin.business.WcsBusiness;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
 import com.mushiny.workbin.exception.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class WorkBinController {
 
     @Autowired
     private WorkBinAppService workBinAppService;
+    @Autowired
+    WcsBusiness wcsBusiness;
 
     /**
      * 入库绑定库位
@@ -32,7 +35,7 @@ public class WorkBinController {
      */
     @PostMapping("/createInput")
     public Result createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
-        return new Result<>().ok(workBinAppService.createTask(1, record));
+        return new Result().ok(workBinAppService.createTask(1, record));
     }
 
     /**
@@ -94,6 +97,17 @@ public class WorkBinController {
     public Result output(@RequestParam("labels") String labels) throws Exception {
         return new Result<>().ok(workBinAppService.output(labels));
     }
+    /**
+     *
+     *
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/test")
+    public Result test() throws Exception {
+        return new Result<>().ok(wcsBusiness.queryBinInfo());
+    }
+
 
 
 }

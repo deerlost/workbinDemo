@@ -7,9 +7,16 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   # 配置rabbitMQspring:
   rabbitmq:
-    host: 127.0.0.1
-    username: guest
-    password: guest
+    host: 52.83.193.245
+    username: wms-test
+    password: wms-test
 
 netty:
   port: 10111
+
+wcs:
+  token: eyJraWQiOiJhcHBUb2tlbiIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJhdWQiOiI1ZjM2NTRkZGE5NTExZTAwMDE3ZTc0MTYifQ.csHUC39T2ZQWRAIebHjNTtXb975qsVhgQuylcnTy-7k
+  sectionId: 11
+  updateBinUrl: http://turnover-box-api-dev.mushiny.com/tote/factory/updateBin #修改货位料箱
+  callToteUrl: http://turnover-box-api-dev.mushiny.com/tote/factory/tote-call #料箱呼叫
+  queryBinListUrl: http://turnover-box-api-dev.mushiny.com/tote/rake/bin/queryBinList #货位料箱信息查询

@@ -16,6 +16,7 @@ import com.mushiny.workbin.service.MdStorageBinService;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -42,23 +43,28 @@ public class ReceiveMsg {
     @Autowired
     private MdStorageBinService storageBinService;
 
-    @RabbitListener(containerFactory = "rabbitListenerContainerFactory", bindings = @QueueBinding(value = @Queue(value = RabbitConfigure.WCS_TASK_STATUS_CHANGE_QUEUE, durable = "true", autoDelete = "true"), exchange = @Exchange(value = RabbitConfigure.WCS_TASK_STATUS_CHANGE_EXCHANGE, type = ExchangeTypes.TOPIC), key = RabbitConfigure.WCS_TASK_STATUS_CHANGE_KEY))
-    public void receiveMsgContent(MonitorToteTaskStatusChange msg) {
+    @RabbitListener(containerFactory = "rabbitListenerContainerFactory",
+            bindings = @QueueBinding(value = @Queue(value = RabbitConfigure.WCS_TASK_STATUS_CHANGE_QUEUE,
+                    durable = "true", autoDelete = "true"),
+                    exchange = @Exchange(value = RabbitConfigure.WCS_TASK_STATUS_CHANGE_EXCHANGE, type = ExchangeTypes.TOPIC),
+                    key = RabbitConfigure.WCS_TASK_STATUS_CHANGE_KEY))
+    public void receiveMsgContent(Message msg) {
         if (msg == null) {
             log.info("mq 接收数据为null");
             return;
         }
 
-        IntTransportOrder order = transportOrderService.getByLabelAndBinCode(msg.getToteCode(), msg.getBinCode());
+        MonitorToteTaskStatusChange change = MQUtil.toObject(msg.getBody(), MonitorToteTaskStatusChange.class);
 
-        if (msg.getStepTaskStatus().equalsIgnoreCase("Finished")) {
+        IntTransportOrder order = transportOrderService.getByLabelAndBinCode(change.getToteCode(), change.getBinCode());
+
+        if (change.getStepTaskStatus().equalsIgnoreCase("Finished")) {
 
             InvUnitLoad unitLoad = unitLoadService.getByLabel(order.getUnitLoadLabel());
             unitLoad.setStorageBinId(order.getDestinationBinId());
             unitLoadService.updateById(unitLoad);
 
             order.setStatus(OrderStatusEnum.COMPLETE.getValue());
-
 
             //TODO 判断出入库类型 是否推送给netty
             transportOrderService.updateById(order);

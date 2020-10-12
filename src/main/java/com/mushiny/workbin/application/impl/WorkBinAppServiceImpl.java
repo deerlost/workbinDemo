@@ -49,7 +49,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
 
 
     private final static String PERFIX = "TO";
-    private final static long start = 00000001l;
+    private final static String start = "10000001";
 
 
     @Override
@@ -88,6 +88,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
                 throw new WMSException("库位信息为空");
             }
 
+            order.setSourceBinId(bin.getId());
             MdProduct product = productService.getByCode(record.getProductCode());
             if (ObjectUtils.isEmpty(product)) {
                 throw new WMSException("商品信息为空");
@@ -103,8 +104,9 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
                 throw new WMSException("无可用的库位");
             }
             order.setDestinationBinId(availableBin.get(0).getId());
+            order.setTargetStorageCode(availableBin.get(0).getCode());
             //TODO 调用wcs 修改货位料箱接口
-         //   wcsBusiness.wcsUpdateBin(availableBin.get(0).getCode(),record.getLabel());
+            wcsBusiness.wcsUpdateBin(bin.getCode(),record.getLabel());
         }else{
             order.setOrderType(OrderTypeEnum.GOODS_OUT.getValue());
             order.setSourceBinId(load.getStorageBinId());
@@ -116,9 +118,15 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
                 throw new WMSException("无可用的库位");
             }
             order.setDestinationBinId(availableBin.get(0).getId());
+            order.setTargetStorageCode(availableBin.get(0).getCode());
         }
 
         order.setStatus(OrderStatusEnum.CREATE.getValue());
+
+        IntTransportOrder t = transportOrderService.getByLabelAndBinCode(record.getLabel(), order.getTargetStorageCode());
+        if(!ObjectUtils.isEmpty(t)){
+            throw new WMSException("该料箱到目标库位已有任务，无法创建");
+        }
         transportOrderService.save(order);
 
         return record;
@@ -158,7 +166,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
         List<IntTransportOrder> orderList = transportOrderService.getListByCond(param);
 
         if(CollectionUtils.isEmpty(orderList)) throw new WMSException("料箱无待执行的任务");
-        wcsBusiness.callLabel(ActionTypeEnum.TOTE_RAKE_PUT.name(), orderList);
+        wcsBusiness.callLabel(orderList);
         return 0;
     }
 }

@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfigure {
 
     // 队列名称
-    public final static String WCS_TASK_STATUS_CHANGE_QUEUE = "wcs-task-status-change-queue";
+    public final static String WCS_TASK_STATUS_CHANGE_QUEUE = "wcs_task_status_change_queue";
 
     public final static String WCS_TASK_STATUS_CHANGE_EXCHANGE = "amq.topic";
 
-    public final static String WCS_TASK_STATUS_CHANGE_KEY = "tote.task.status.change.s";
+    public final static String WCS_TASK_STATUS_CHANGE_KEY = "tote.task.status.change.s11";
 }

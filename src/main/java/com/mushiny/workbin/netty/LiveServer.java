@@ -8,10 +8,13 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +74,11 @@ public class LiveServer  implements ServletContextListener{
                             throws Exception {
                         logger.info("initChannel ch:" + ch);
                         ch.pipeline()
-                                .addLast(new ObjectEncoder())   // 1
-                                .addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)))  // 2
-                                .addLast(new IdleStateHandler(READ_IDEL_TIME_OUT, WRITE_IDEL_TIME_OUT, ALL_IDEL_TIME_OUT, TimeUnit.MINUTES))// 3
-                                .addLast(liveServerHandler);        // 4
+                                .addLast(new StringDecoder(CharsetUtil.UTF_8))   // 1
+                                .addLast(new StringDecoder(CharsetUtil.UTF_8))  // 2
+                                .addLast(new IdleStateHandler(READ_IDEL_TIME_OUT, WRITE_IDEL_TIME_OUT, ALL_IDEL_TIME_OUT, TimeUnit.SECONDS))// 3
+                                .addLast(liveServerHandler)// 4
+                                .addLast(new LengthFieldBasedFrameDecoder(20*1024,0,2));
                     }
                 })
                 .bind(port)

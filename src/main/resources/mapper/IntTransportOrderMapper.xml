@@ -48,9 +48,11 @@
     <select id="getListByCond" resultType="com.mushiny.workbin.entity.IntTransportOrder">
         select distinct
         t.*,
-        b.code targetStorageCode
+        b.code targetStorageCode,
+        sb.code sourceStorageCode
         from int_transport_order t
         inner join md_storage_bin b on b.id = t.destination_bin_id
+        inner join md_storage_bin sb on sb.id = t.source_bin_id
         <where>
             <if test="orderType !=null and orderType >0">
                 t.order_type = #{orderType}
@@ -80,7 +82,7 @@
         where
         t.unit_load_label =#{label}
         and b.code =#{binCode}
-        and t.status = 20
+        and t.status = 10
         limit 1;
     </select>
 </mapper>
