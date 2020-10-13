@@ -4,6 +4,7 @@ package com.mushiny.workbin.netty;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.ServletContextListener;
 
@@ -15,7 +16,7 @@ import javax.servlet.ServletContextListener;
  * @date：2019/11/4
  * @版本：V1.0
  */
-//ty@Configuration
+//@Configuration
 public class WmsNettyConfig {
 
 
@@ -25,8 +26,8 @@ public class WmsNettyConfig {
     @Bean
     public ServletListenerRegistrationBean<ServletContextListener> getServletListenerRegistrationBean() {
         System.out.println("初始化 Listener=================");
-       // ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<ServletContextListener>(new LiveServer(port));
-        return null;
+        ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<ServletContextListener>(new LiveServer(port));
+        return bean;
     }
 
 }

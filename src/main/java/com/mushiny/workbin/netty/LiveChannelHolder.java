@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  *
  */
-public class LiveChannnelHolder {
+public class LiveChannelHolder {
     private static Map<String, Channel> channelCache = new ConcurrentHashMap<>();
 
     public static void add(String userCode, Channel channel) {
@@ -43,6 +43,6 @@ public class LiveChannnelHolder {
     }
 
     public static void setChannelCache(Map<String, Channel> channelCache) {
-        LiveChannnelHolder.channelCache = channelCache;
+        LiveChannelHolder.channelCache = channelCache;
     }
 }

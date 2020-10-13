@@ -2,6 +2,8 @@ package com.mushiny.workbin.rabbit;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.mushiny.workbin.config.RabbitConfigure;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
 import com.mushiny.workbin.entity.IntTransportOrder;
@@ -9,10 +11,11 @@ import com.mushiny.workbin.entity.InvUnitLoad;
 import com.mushiny.workbin.entity.MdStorageBin;
 import com.mushiny.workbin.enums.OrderStatusEnum;
 import com.mushiny.workbin.enums.OrderTypeEnum;
-import com.mushiny.workbin.netty.LiveChannnelHolder;
+import com.mushiny.workbin.netty.LiveChannelHolder;
 import com.mushiny.workbin.service.IntTransportOrderService;
 import com.mushiny.workbin.service.InvUnitLoadService;
 import com.mushiny.workbin.service.MdStorageBinService;
+import com.mushiny.workbin.websocket.WebSocketServer;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -25,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -77,9 +81,10 @@ public class ReceiveMsg {
                 dto.setStorageCode(targetBin.getCode());
                 dto.setLabel(order.getUnitLoadLabel());
 
-                Map<String, Channel> channelMap = LiveChannnelHolder.getChannelCache();
-                for (Map.Entry<String, Channel> entry : channelMap.entrySet()) {
-                    entry.getValue().writeAndFlush(JSON.toJSONString(dto));
+                try {
+                    WebSocketServer.sendInfo(JSONObject.toJSONString(dto),null);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

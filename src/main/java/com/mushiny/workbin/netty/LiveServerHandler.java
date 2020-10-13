@@ -31,7 +31,7 @@ public class LiveServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         // Channel失效，从Map中移除
-        LiveChannnelHolder.remove(ctx.channel());
+        LiveChannelHolder.remove(ctx.channel());
         logger.info("{}离线", ctx.channel());
     }
 
@@ -48,7 +48,7 @@ public class LiveServerHandler extends SimpleChannelInboundHandler<String> {
         String temp = msg.toLowerCase();
         Channel channel = ctx.channel();
         final int hashCode = channel.hashCode();
-        Map<String, Channel> channelCache = LiveChannnelHolder.getChannelCache();
+        Map<String, Channel> channelCache = LiveChannelHolder.getChannelCache();
 
         logger.info("channel hashCode:" + hashCode + " msg:" + msg + " cache:" + channelCache.size());
 
@@ -58,11 +58,14 @@ public class LiveServerHandler extends SimpleChannelInboundHandler<String> {
                 logger.info("channel close, remove key:" + temp);
                 LiveChannnelHolder.remove(temp);
             });*/
-            LiveChannnelHolder.add(temp, ctx.channel());
+            LiveChannelHolder.add(temp, ctx.channel());
             Channel currentChannel = channelCache.get(temp);
             JSONObject result = new JSONObject();
             result.put("msg","1");
             currentChannel.writeAndFlush(result);
+
+            ctx.write("sss");
+            ctx.flush();
             logger.info("发送信息 ：{}" ,result.toString());
         } else {
             Channel currentChannel = channelCache.get(temp);
@@ -74,7 +77,7 @@ public class LiveServerHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        Map<String, Channel> channelCache = LiveChannnelHolder.getChannelCache();
+        Map<String, Channel> channelCache = LiveChannelHolder.getChannelCache();
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             String type = "";

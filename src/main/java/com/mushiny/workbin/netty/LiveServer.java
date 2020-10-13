@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContextEvent;
@@ -34,7 +36,6 @@ import java.util.concurrent.TimeUnit;
  * @date：2019/11/4
  * @版本：V1.0
  */
-@Component
 public class LiveServer  implements ServletContextListener{
 
     private static Logger logger = LoggerFactory.getLogger(LiveServer.class);
@@ -42,22 +43,19 @@ public class LiveServer  implements ServletContextListener{
     private static final int WRITE_IDEL_TIME_OUT = 0;// 写超时
     private static final int ALL_IDEL_TIME_OUT = 0; // 所有超时
 
-    @Autowired
     LiveServerHandler liveServerHandler;
 
-    @Value("${netty.port}")
     private int port;
 
-    /*public LiveServer(int port) {
+    public LiveServer(int port) {
         this.port = port;
-    }*/
+    }
 
-    @PostConstruct
-    public void contextInitialized() {
+   // @PostConstruct
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
 
-        /*WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContextEvent.getServletContext());
+        WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContextEvent.getServletContext());
         this.liveServerHandler = (LiveServerHandler) applicationContext.getBean("liveServerHandler");
-*/
         logger.info("===============netty server start===============");
         ServerBootstrap b = new ServerBootstrap();
         NioEventLoopGroup group = new NioEventLoopGroup();
