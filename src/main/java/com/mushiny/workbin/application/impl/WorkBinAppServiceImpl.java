@@ -124,7 +124,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
 
         order.setStatus(OrderStatusEnum.CREATE.getValue());
 
-        IntTransportOrder t = transportOrderService.getByLabelAndBinCode(record.getLabel(), order.getTargetStorageCode());
+        IntTransportOrder t = transportOrderService.getByLabelAndBinCode(record.getLabel(),null);
         if(!ObjectUtils.isEmpty(t)){
             throw new WMSException("该料箱已有任务，无法创建");
         }

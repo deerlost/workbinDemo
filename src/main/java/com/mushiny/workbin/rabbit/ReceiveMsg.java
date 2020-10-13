@@ -74,7 +74,7 @@ public class ReceiveMsg {
             //TODO 判断出入库类型 是否推送给netty
             transportOrderService.updateStatus(order);
 
-            if (order.getOrderType().equals(OrderTypeEnum.GOODS_OUT.getValue())) {
+            if (order.getOrderType().equals(OrderTypeEnum.GOODS_IN.getValue())) {
 
                 MdStorageBin targetBin = storageBinService.getById(order.getDestinationBinId());
                 WorkBinTaskDTO dto = new WorkBinTaskDTO();

@@ -86,7 +86,9 @@
         inner join md_storage_bin b on b.id = t.destination_bin_id
         where
         t.unit_load_label =#{label}
-        and b.code =#{binCode}
+        <if test="binCode != null and binCode !=''">
+            and b.code =#{binCode}
+        </if>
         and t.status = 10
         limit 1;
     </select>
