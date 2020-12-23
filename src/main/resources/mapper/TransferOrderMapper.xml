@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mushiny.workbin.dao.TransferOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.mushiny.workbin.entity.TransferOrder" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="label_id" property="labelId" jdbcType="VARCHAR" />
+    <result column="po_no" property="poNo" jdbcType="VARCHAR" />
+    <result column="table_no" property="tableNo" jdbcType="VARCHAR" />
+    <result column="style_no" property="styleNo" jdbcType="VARCHAR" />
+    <result column="psize" property="psize" jdbcType="VARCHAR" />
+    <result column="sum_qty" property="sumQty" jdbcType="INTEGER" />
+    <result column="country_no" property="countryNo" jdbcType="VARCHAR" />
+    <result column="colour" property="colour" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, label_id, po_no, table_no, style_no, psize, sum_qty, country_no, colour
+  </sql>
+    <delete id="deleteByLabel">
+        delete from transfer_order
+        where label_id in(
+        <foreach collection="labelList" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+
+    </delete>
+    <select id="getList" resultType="com.mushiny.workbin.entity.TransferOrder">
+          select
+        STYLENO styleNo,
+        PONO poNo,
+        COLOUR colour,
+        COUNTRYNO countryNo,
+        PSIZE psize,
+        sum(SQTY) sumQty
+      FROM(
+      select  substring(STYLENO,3,20) as STYLENO, PONO,COLOUR,  COUNTRYNO, PSIZE,SQTY
+      from  DISPATCHER_WEAR where LISTNO= #{code}
+      ) A
+      group by styleNo, poNo,colour,  countryNo, psize
+      <!--  SELECT DISTINCT
+                    t.*
+                  FROM
+                  transfer_order t
+                  left JOIN inv_unit_load ul ON ul.label_id = t.label_id
+                  left JOIN md_storage_bin sb on sb.id = ul.storage_bin_id
+                  WHERE t.po_no = #{code}-->
+  </select>
+  <select id="getListByCond" resultType="com.mushiny.workbin.dto.TransferOrderDTO">
+    SELECT DISTINCT
+          t.*,
+          sb.`code` storageBinCode
+        FROM
+        transfer_order t
+        INNER JOIN inv_unit_load ul ON ul.label_id = t.label_id
+        INNER JOIN md_storage_bin sb on sb.id = ul.storage_bin_id
+    <where>
+      <if test="poNo != null and poNo !=''">
+        t.po_no like concat('%',#{poNo},'%')
+      </if>
+      <if test="styleNo != null and styleNo !=''">
+        and t.style_no like concat('%',#{styleNo},'%')
+      </if>
+      <if test="colour != null and colour !=''">
+        and t.colour like concat('%',#{colour},'%')
+      </if>
+      <if test="tableNo != null and tableNo !=''">
+        and t.table_no like concat('%',#{tableNo},'%')
+      </if>
+      <if test="psize != null and psize !=''">
+        and t.psize like concat('%',#{psize},'%')
+      </if>
+      <if test="label != null and label !=''">
+        and t.label_id like concat('%',#{label},'%')
+      </if>
+
+    </where>
+
+  </select>
+
+    <insert id="insertSelective" parameterType="com.mushiny.workbin.entity.TransferOrder" >
+        insert into transfer_order
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="labelId != null" >
+                label_id,
+            </if>
+            <if test="poNo != null" >
+                po_no,
+            </if>
+            <if test="tableNo != null" >
+                table_no,
+            </if>
+            <if test="styleNo != null" >
+                style_no,
+            </if>
+            <if test="psize != null" >
+                psize,
+            </if>
+            <if test="sumQty != null" >
+                sum_qty,
+            </if>
+            <if test="countryNo != null" >
+                country_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="labelId != null" >
+                #{labelId,jdbcType=VARCHAR},
+            </if>
+            <if test="poNo != null" >
+                #{poNo,jdbcType=VARCHAR},
+            </if>
+            <if test="tableNo != null" >
+                #{tableNo,jdbcType=VARCHAR},
+            </if>
+            <if test="styleNo != null" >
+                #{styleNo,jdbcType=VARCHAR},
+            </if>
+            <if test="psize != null" >
+                #{psize,jdbcType=VARCHAR},
+            </if>
+            <if test="sumQty != null" >
+                #{sumQty,jdbcType=INTEGER},
+            </if>
+            <if test="countryNo != null" >
+                #{countryNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

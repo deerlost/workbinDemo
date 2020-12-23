@@ -52,7 +52,7 @@ public class BaseEntity implements Serializable {
      * 删除标识 0：未删除    1：删除
      */
     @TableLogic
-    private Integer delFlag;
+    private int delFlag;
 
     /**
      * 版本
@@ -121,12 +121,13 @@ public class BaseEntity implements Serializable {
         this.status = status;
     }
 
-    public Integer getDelFlag() {
+    public int getDelFlag() {
         return delFlag;
     }
 
-    public void setDelFlag(Integer delFlag) {
+    public BaseEntity setDelFlag(int delFlag) {
         this.delFlag = delFlag;
+        return this;
     }
 
     public Integer getVersion() {

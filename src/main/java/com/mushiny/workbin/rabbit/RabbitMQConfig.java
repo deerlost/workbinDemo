@@ -1,6 +1,7 @@
 package com.mushiny.workbin.rabbit;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -16,9 +17,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 
 @Configuration
-@Slf4j
 public class RabbitMQConfig {
-
+	private Logger log = LoggerFactory.getLogger(RabbitMQConfig.class);
 	@Autowired
 	private Environment environment;
 

@@ -9,7 +9,8 @@ import com.mushiny.workbin.entity.MdStorageBin;
 import com.mushiny.workbin.enums.ActionTypeEnum;
 import com.mushiny.workbin.exception.WMSException;
 import com.mushiny.workbin.service.MdStorageBinService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -34,8 +35,9 @@ import java.util.stream.Collectors;
  * @date：2020/9/27
  */
 @Component
-@Slf4j
 public class WcsBusiness {
+    private Logger log = LoggerFactory.getLogger(WcsBusiness.class);
+
     @Autowired
     private MdStorageBinService storageBinService;
 
@@ -123,7 +125,9 @@ public class WcsBusiness {
             fetch.put("toteInfoDTO", son);
             fetch.put("binCode", order.getSourceStorageCode());
             jsonArray.add(fetch);
+        }
 
+        for (IntTransportOrder order : orderList) {
             JSONObject put = new JSONObject();
             put.put("toteAGVTaskActionType", ActionTypeEnum.PUT.name());
             JSONObject sonf = new JSONObject();

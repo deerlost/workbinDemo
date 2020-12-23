@@ -1,0 +1,39 @@
+spring:
+    # 配置rabbitMQspring:
+  rabbitmq:
+    host: 172.16.0.27
+    username: user1
+    password: 123456
+
+  datasource:
+    defaultname: primary
+    names: primary,secondary
+    primary:
+      url: jdbc:mysql://172.16.0.27:3306/lima_demo?useSSL=false&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useAffectedRows=true
+      #url: jdbc:mysql://172.18.19.106:3306/wms_holike?useSSL=false&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useAffectedRows=true
+      username: root
+      password: '2HviB7A%R0'
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
+      connection-timeout: 30000
+      # 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
+      idle-timeout: 600000
+      # 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒
+      max-lifetime: 1800000
+      # 连接池中允许的最大连接数。缺省值：10
+      maximum-pool-size: 50
+      minimum-idle: 10
+    secondary:
+      url:  jdbc:sqlserver://172.16.1.58:1433;databasename=TRANSCEIVER
+      username: AGV
+      password: 'Ramatex2020'
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+netty:
+  port: 10111
+
+wcs:
+  token: eyJraWQiOiJhcHBUb2tlbiIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJhdWQiOiI1ZjhmOTM1YmFiNmY4YWIwYWZjYmY1M2IifQ.5RrqnWl1a9Zna_lZhqhR4Jt9PgUKCx4gpr69i0-M4bs
+  sectionId: 1
+  updateBinUrl: http://tote-wcs-api.mushiny.local/tote/factory/updateBin #修改货位料箱
+  callToteUrl: http://tote-wcs-api.mushiny.local/tote/factory/tote-call #料箱呼叫
+  queryBinListUrl: http://tote-wcs-api.mushiny.local/tote/rake/bin/queryBinList #货位料箱信息查询

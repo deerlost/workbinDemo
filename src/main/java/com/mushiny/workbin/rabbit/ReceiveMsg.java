@@ -1,9 +1,7 @@
 package com.mushiny.workbin.rabbit;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.mushiny.workbin.config.RabbitConfigure;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
 import com.mushiny.workbin.entity.IntTransportOrder;
@@ -11,13 +9,12 @@ import com.mushiny.workbin.entity.InvUnitLoad;
 import com.mushiny.workbin.entity.MdStorageBin;
 import com.mushiny.workbin.enums.OrderStatusEnum;
 import com.mushiny.workbin.enums.OrderTypeEnum;
-import com.mushiny.workbin.netty.LiveChannelHolder;
 import com.mushiny.workbin.service.IntTransportOrderService;
 import com.mushiny.workbin.service.InvUnitLoadService;
 import com.mushiny.workbin.service.MdStorageBinService;
 import com.mushiny.workbin.websocket.WebSocketServer;
-import io.netty.channel.Channel;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -29,7 +26,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @Description TODO
@@ -38,8 +34,8 @@ import java.util.Map;
  * @date：2020/9/28
  */
 @Component
-@Slf4j
 public class ReceiveMsg {
+    private Logger log = LoggerFactory.getLogger(ReceiveMsg.class);
 
     @Autowired
     private IntTransportOrderService transportOrderService;
@@ -54,14 +50,17 @@ public class ReceiveMsg {
                     exchange = @Exchange(value = RabbitConfigure.WCS_TASK_STATUS_CHANGE_EXCHANGE, type = ExchangeTypes.TOPIC),
                     key = RabbitConfigure.WCS_TASK_STATUS_CHANGE_KEY))
     public void receiveMsgContent(Message msg) {
+        log.info("msg :{}",msg.toString());
+
         if (msg == null) {
             log.info("mq 接收数据为null");
-            return;
+            return;i
         }
 
         MonitorToteTaskStatusChange change = MQUtil.toObject(msg.getBody(), MonitorToteTaskStatusChange.class);
 
         IntTransportOrder order = transportOrderService.getByLabelAndBinCode(change.getToteCode(), change.getBinCode());
+        log.info("msg binCode:{} , label:{}, 任务状态：{},order id :{} , orderType :{}",change.getBinCode(),change.getToteCode(),order.getId(),order.getOrderType());
 
         if (change.getStepTaskStatus().equalsIgnoreCase("Finished") && !ObjectUtils.isEmpty(order)) {
 

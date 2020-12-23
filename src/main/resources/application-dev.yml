@@ -17,6 +17,6 @@ netty:
 wcs:
   token: eyJraWQiOiJhcHBUb2tlbiIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJhdWQiOiI1ZjM2NTRkZGE5NTExZTAwMDE3ZTc0MTYifQ.csHUC39T2ZQWRAIebHjNTtXb975qsVhgQuylcnTy-7k
   sectionId: 11
-  updateBinUrl: http://turnover-box-api-dev.mushiny.com/tote/factory/updateBin #修改货位料箱
-  callToteUrl: http://turnover-box-api-dev.mushiny.com/tote/factory/tote-call #料箱呼叫
-  queryBinListUrl: http://turnover-box-api-dev.mushiny.com/tote/rake/bin/queryBinList #货位料箱信息查询
+  updateBinUrl: http://tote-wcs-api.mushiny.local/tote/factory/updateBin #修改货位料箱
+  callToteUrl: http://tote-wcs-api.mushiny.local/tote/factory/tote-call #料箱呼叫
+  queryBinListUrl: http://tote-wcs-api.mushiny.local/tote/rake/bin/queryBinList #货位料箱信息查询

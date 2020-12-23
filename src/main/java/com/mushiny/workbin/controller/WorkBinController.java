@@ -4,7 +4,9 @@ package com.mushiny.workbin.controller;
 import com.mushiny.workbin.application.WorkBinAppService;
 import com.mushiny.workbin.business.SchedulerBusiness;
 import com.mushiny.workbin.business.WcsBusiness;
+import com.mushiny.workbin.dto.InputTaskDTO;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
+import com.mushiny.workbin.entity.TransferOrder;
 import com.mushiny.workbin.exception.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -29,6 +34,19 @@ public class WorkBinController {
     @Autowired
     SchedulerBusiness schedulerBusiness;
 
+
+    /**
+     * 入库 扫描条码
+     *
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/scan")
+    public Result scan(@RequestBody Map<String,Object> map) throws Exception {
+        return new Result<>().ok(workBinAppService.getTransferOrderList(map));
+    }
+
     /**
      * 入库绑定库位
      *
@@ -38,7 +56,9 @@ public class WorkBinController {
      */
     @PostMapping("/createInput")
     public Result createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
-        return new Result().ok(workBinAppService.createTask(1, record));
+        InputTaskDTO dto = new InputTaskDTO();
+        dto.setTaskList(Arrays.asList(record));
+        return new Result().ok(workBinAppService.createTask(1, dto).getTaskList().get(0));
     }
 
     /**
@@ -53,17 +73,6 @@ public class WorkBinController {
         return new Result<>().ok(workBinAppService.input(labels));
     }
 
-    /**
-     * 产线呼叫 获取料箱信息
-     *
-     * @param sku
-     * @return
-     * @throws Exception
-     */
-    @GetMapping("/getLabel")
-    public Result getLabel(@RequestParam("sku") String sku) throws Exception {
-        return new Result<>().ok(workBinAppService.getLabelList(sku));
-    }
 
     /**
      * 产线呼叫 下发出库任务
@@ -73,8 +82,20 @@ public class WorkBinController {
      * @throws Exception
      */
     @PostMapping("/createOutput")
-    public Result createOutput(@RequestBody WorkBinTaskDTO record) throws Exception {
+    public Result createOutput(@RequestBody InputTaskDTO record) throws Exception {
         return new Result<>().ok(workBinAppService.createTask(2, record));
+    }
+
+    /**
+     * 产线呼叫  查询
+     *
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/query")
+    public Result query(@RequestBody Map<String,Object> query) throws Exception {
+        return new Result<>().ok(workBinAppService.getByCond(query));
     }
 
     /**

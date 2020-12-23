@@ -1,11 +1,15 @@
 package com.mushiny.workbin.application;
 
 
+import com.mushiny.workbin.dto.InputTaskDTO;
 import com.mushiny.workbin.dto.InvUnitLoadDTO;
+import com.mushiny.workbin.dto.TransferOrderDTO;
 import com.mushiny.workbin.dto.WorkBinTaskDTO;
+import com.mushiny.workbin.entity.TransferOrder;
 import com.mushiny.workbin.exception.WMSException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -20,12 +24,12 @@ public interface WorkBinAppService {
     /**
      * 创建任务
      *
-     * @param type 1入库 2出库
+     * @param type   1入库 2出库
      * @param record
      * @return
      * @throws WMSException
      */
-    WorkBinTaskDTO createTask(int type ,WorkBinTaskDTO record) throws WMSException;
+    InputTaskDTO createTask(int type, InputTaskDTO record) throws WMSException;
 
     /**
      * 获取出库信息
@@ -39,6 +43,11 @@ public interface WorkBinAppService {
     int output(String labels) throws WMSException;
 
     int input(String labels) throws WMSException;
+
+    List<TransferOrder> getTransferOrderList(Map<String,Object> map) throws WMSException;
+
+    List<TransferOrderDTO> getByCond(Map<String,Object> query) throws WMSException;
+
 
 
 }

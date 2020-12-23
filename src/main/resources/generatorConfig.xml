@@ -45,23 +45,8 @@
 
 
 		<!-- 这里是数据库的表名table_user 以及 POJO类的名字User -->
-		<table schema="wms_demo" tableName="inv_unit_load" domainObjectName="InvUnitLoad"
-			enableCountByExample="false" enableSelectByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false">
-		</table>
-		<table schema="wms_demo" tableName="md_product" domainObjectName="MdProduct"
-			enableCountByExample="false" enableSelectByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false">
-		</table>
-		<table schema="wms_demo" tableName="md_rack" domainObjectName="MdRack"
-			enableCountByExample="false" enableSelectByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false">
-		</table>
-		<table schema="wms_demo" tableName="md_storage_bin" domainObjectName="MdStorageBin"
-			enableCountByExample="false" enableSelectByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false">
-		</table>
-		<table schema="wms_demo" tableName="md_working_station" domainObjectName="MdWorkingStation"
+
+		<table schema="wms_demo" tableName="transfer_order" domainObjectName="TransferOrder"
 			enableCountByExample="false" enableSelectByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false">
 		</table>

@@ -38,6 +38,7 @@
                 #{item}
             </foreach>
         )
+        and order_type = 2
 
     </update>
     <update id="updateStatus">
@@ -47,7 +48,7 @@
     </update>
     <select id="getLastOrder" resultType="com.mushiny.workbin.entity.IntTransportOrder">
     select * from int_transport_order
-    order by create_date desc limit 1;
+    order by order_number desc limit 1;
 
   </select>
     <select id="getListByCond" resultType="com.mushiny.workbin.entity.IntTransportOrder">
@@ -56,7 +57,7 @@
         b.code targetStorageCode,
         sb.code sourceStorageCode
         from int_transport_order t
-        inner join md_storage_bin b on b.id = t.destination_bin_id
+        left join md_storage_bin b on b.id = t.destination_bin_id
         inner join md_storage_bin sb on sb.id = t.source_bin_id
         <where>
             <if test="orderType !=null and orderType >0">
@@ -89,7 +90,7 @@
         <if test="binCode != null and binCode !=''">
             and b.code =#{binCode}
         </if>
-        and t.status = 10
+            and (t.status =10 or t.status =20)
         limit 1;
     </select>
 </mapper>

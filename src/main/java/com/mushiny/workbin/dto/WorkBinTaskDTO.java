@@ -1,6 +1,8 @@
 package com.mushiny.workbin.dto;
 
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -12,18 +14,22 @@ public class WorkBinTaskDTO {
 
     private String point;
 
-    private String productCode;
-
     private String label;
 
     private String storageCode;
 
-    public String getProductCode() {
-        return productCode == null ? "" : productCode;
+    private List<TransferOrderDTO> orderList;
+
+
+    public List<TransferOrderDTO> getOrderList() {
+        if (orderList == null) {
+            return new ArrayList<>();
+        }
+        return orderList;
     }
 
-    public WorkBinTaskDTO setProductCode(String productCode) {
-        this.productCode = productCode;
+    public WorkBinTaskDTO setOrderList(List<TransferOrderDTO> orderList) {
+        this.orderList = orderList;
         return this;
     }
 

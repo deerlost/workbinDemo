@@ -19,11 +19,18 @@
       FROM
       md_storage_bin b
       WHERE
-      NOT EXISTS ( SELECT DISTINCT sb.* FROM inv_unit_load ul WHERE b.id = ul.storage_bin_id )
-      AND NOT EXISTS ( SELECT DISTINCT sb.* FROM int_transport_order o WHERE b.id = o.destination_bin_id and o.status != 30 )
-      <if test="binType !=null and binType >0">
-        AND b.storage_bin_type_id = #{binType}
-      </if>
+      <choose>
+        <when test="binType == 10000">
+          b.storage_bin_type_id = #{binType}
+        </when>
+        <otherwise>
+          NOT EXISTS ( SELECT DISTINCT sb.* FROM inv_unit_load ul WHERE b.id = ul.storage_bin_id )
+          AND NOT EXISTS ( SELECT DISTINCT sb.* FROM int_transport_order o WHERE b.id = o.destination_bin_id and o.status = 10 )
+          AND b.storage_bin_type_id = #{binType}
+        </otherwise>
+      </choose>
+
+
     </select>
 
 </mapper>

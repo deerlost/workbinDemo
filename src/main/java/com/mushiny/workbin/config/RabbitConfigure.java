@@ -17,5 +17,5 @@ public class RabbitConfigure {
 
     public final static String WCS_TASK_STATUS_CHANGE_EXCHANGE = "amq.topic";
 
-    public final static String WCS_TASK_STATUS_CHANGE_KEY = "tote.task.status.change.s11";
+    public final static String WCS_TASK_STATUS_CHANGE_KEY = "tote.task.status.change.s1";
 }
