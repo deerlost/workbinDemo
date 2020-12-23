@@ -69,7 +69,7 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
 
     @Override
     @Transactional(rollbackFor = WMSException.class)
-    public InputTaskDTO createTask(int type , InputTaskDTO dto) throws WMSException {
+    public InputTaskDTO createTask(int type, InputTaskDTO dto) throws WMSException {
 
         for (WorkBinTaskDTO record : dto.getTaskList()) {
 
@@ -91,15 +91,16 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
             InvUnitLoad load = unitLoadService.getByLabel(record.getLabel());
             if (ObjectUtils.isEmpty(load)) {
                 InvUnitLoad sourceLabel = unitLoadService.getByLabel("UL-000000320");
+                if (sourceLabel == null) throw new WMSException("料箱数据为空");
                 sourceLabel.setLabelId(record.getLabel());
                 sourceLabel.setId(null);
                 unitLoadService.save(sourceLabel);
                 load = sourceLabel;
             }
             order.setUnitLoadLabel(record.getLabel());
-            Map<String,Object> param = new HashMap<>();
-            IntTransportOrder t = transportOrderService.getByLabelAndBinCode(record.getLabel(),null);
-            if(!ObjectUtils.isEmpty(t)){
+            Map<String, Object> param = new HashMap<>();
+            IntTransportOrder t = transportOrderService.getByLabelAndBinCode(record.getLabel(), null);
+            if (!ObjectUtils.isEmpty(t)) {
                 order = t;
             }
 
@@ -126,13 +127,13 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
                 unitLoadService.updateById(load);
 
                 for (TransferOrder transferOrder : record.getOrderList()) {
-                    log.debug("transfer order :{}",record.getOrderList().toString());
+                    log.debug("transfer order :{}", record.getOrderList().toString());
                     transferOrder.setLabelId(record.getLabel());
                     transferOrderService.insert(transferOrder);
                 }
 
 
-                param.put("binType",20000);
+                param.put("binType", 20000);
                 List<MdStorageBin> availableBin = storageBinService.getAvailableBin(param);
                 if (CollectionUtils.isEmpty(availableBin)) {
                     throw new WMSException("无可用的库位");
@@ -140,13 +141,13 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
                 order.setDestinationBinId(availableBin.get(0).getId());
                 order.setTargetStorageCode(availableBin.get(0).getCode());
                 //TODO 调用wcs 修改货位料箱接口
-                wcsBusiness.wcsUpdateBin(bin.getCode(),record.getLabel());
-            }else{
+                //    wcsBusiness.wcsUpdateBin(bin.getCode(),record.getLabel());
+            } else {
                 order.setOrderType(OrderTypeEnum.GOODS_OUT.getValue());
                 order.setSourceBinId(load.getStorageBinId());
                 order.setExternalId(record.getPoint());
                 //TODO target bin
-                param.put("binType",10000);
+                param.put("binType", 10000);
                 List<MdStorageBin> availableBin = storageBinService.getAvailableBin(param);
                 /*if (CollectionUtils.isEmpty(availableBin)) {
                     throw new WMSException("无可用的库位");
@@ -154,8 +155,8 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
                /* Random random = new Random();
                 int pick = random.nextInt(3);
                 if (pick > 2) pick = 0;*/
-              //  order.setDestinationBinId(availableBin.get(pick).getId());
-              //  order.setTargetStorageCode(availableBin.get(pick).getCode());
+                //  order.setDestinationBinId(availableBin.get(pick).getId());
+                //  order.setTargetStorageCode(availableBin.get(pick).getCode());
                 transferOrderService.deleteByLabel(Arrays.asList(record.getLabel()));
             }
 
@@ -173,35 +174,32 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
     @Override
     public WorkBinTaskDTO getTaskForOutput(String label) throws WMSException {
 
-        Map<String,Object> param  = new HashMap<>();
-        param.put("status",OrderStatusEnum.COMPLETE.getValue());
-        param.put("label",label);
-        param.put("orderType",OrderTypeEnum.GOODS_OUT.getValue());
+        Map<String, Object> param = new HashMap<>();
+        param.put("status", OrderStatusEnum.COMPLETE.getValue());
+        param.put("label", label);
+        param.put("orderType", OrderTypeEnum.GOODS_OUT.getValue());
 
         List<IntTransportOrder> orderList = transportOrderService.getListByCond(param);
-        if(CollectionUtils.isEmpty(orderList)){
+        if (CollectionUtils.isEmpty(orderList)) {
             throw new WMSException("当前料箱无法出库");
         }
 
         List<TransferOrderDTO> transferOrderList = transferOrderService.getListByCond(param);
 
 
-        return new WorkBinTaskDTO().setLabel(orderList.get(0).getUnitLoadLabel())
-                    .setPoint(orderList.get(0).getExternalId())
-                    .setStorageCode(orderList.get(0).getTargetStorageCode())
-                    .setOrderList(transferOrderList);
+        return new WorkBinTaskDTO().setLabel(orderList.get(0).getUnitLoadLabel()).setPoint(orderList.get(0).getExternalId()).setStorageCode(orderList.get(0).getTargetStorageCode()).setOrderList(transferOrderList);
     }
 
     @Override
     public int output(String labels) throws WMSException {
         for (String label : labels.split(",")) {
-            Map<String,Object> param = new HashMap<>();
-            param.put("status",30);
-            param.put("label",label);
-            param.put("orderType",OrderTypeEnum.GOODS_OUT.getValue());
+            Map<String, Object> param = new HashMap<>();
+            param.put("status", 30);
+            param.put("label", label);
+            param.put("orderType", OrderTypeEnum.GOODS_OUT.getValue());
             List<IntTransportOrder> order = transportOrderService.getListByCond(param);
             //TODO 调用wcs 修改货位料箱接口
-            wcsBusiness.wcsUpdateBin(order.get(0).getTargetStorageCode(),"");
+            wcsBusiness.wcsUpdateBin(order.get(0).getTargetStorageCode(), "");
         }
         transportOrderService.updateByLabel(Arrays.asList(labels.split(",")));
         unitLoadService.updateByLabel(Arrays.asList(labels.split(",")));
@@ -211,23 +209,23 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
 
     @Override
     public int input(String labels) throws WMSException {
-        Map<String,Object> param = new HashMap<>();
-        param.put("labelList",Arrays.asList(labels.split(",")));
-        param.put("orderType",OrderTypeEnum.GOODS_IN.getValue());
-        param.put("status",OrderStatusEnum.CREATE.getValue());
+        Map<String, Object> param = new HashMap<>();
+        param.put("labelList", Arrays.asList(labels.split(",")));
+        param.put("orderType", OrderTypeEnum.GOODS_IN.getValue());
+        param.put("status", OrderStatusEnum.CREATE.getValue());
         List<IntTransportOrder> orderList = transportOrderService.getListByCond(param);
 
-        if(CollectionUtils.isEmpty(orderList)) throw new WMSException("料箱无待执行的任务");
+        if (CollectionUtils.isEmpty(orderList)) throw new WMSException("料箱无待执行的任务");
         wcsBusiness.callLabel(orderList);
         return 0;
     }
 
     @Override
-    public List<TransferOrder> getTransferOrderList(Map<String,Object> map) throws WMSException {
+    public List<TransferOrder> getTransferOrderList(Map<String, Object> map) throws WMSException {
         String qrCode = map.get("qrCode").toString();
         List<TransferOrder> result = new ArrayList<>();
 
-        if(!qrCode.startsWith("V5")){
+        if (!qrCode.startsWith("V5")) {
             List<TransferOrder> orderList = transferOrderService.getList(qrCode);
             result.addAll(orderList);
         } else {
@@ -246,9 +244,9 @@ public class WorkBinAppServiceImpl implements WorkBinAppService {
     }
 
     @Override
-    public List<TransferOrderDTO> getByCond(Map<String,Object> query) throws WMSException {
+    public List<TransferOrderDTO> getByCond(Map<String, Object> query) throws WMSException {
         List<TransferOrderDTO> result = transferOrderService.getListByCond(query);
-        if(CollectionUtils.isEmpty(result)){
+        if (CollectionUtils.isEmpty(result)) {
             throw new WMSException("结果为空,请重新查询");
         }
         return result;

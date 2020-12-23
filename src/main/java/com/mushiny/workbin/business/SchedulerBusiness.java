@@ -41,7 +41,7 @@ public class SchedulerBusiness {
     private MdStorageBinService storageBinService;
 
 
-    @Scheduled(fixedDelay = 1000 * 10)
+   // @Scheduled(fixedDelay = 1000 * 10)
     public void callToOutput() {
         List<InvUnitLoad> unitLoadList = unitLoadService.getLabelListOnOutputPod();
 

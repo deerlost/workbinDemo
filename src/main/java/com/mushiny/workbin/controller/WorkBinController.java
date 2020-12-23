@@ -1,6 +1,7 @@
 package com.mushiny.workbin.controller;
 
 
+import com.mushiny.workbin.annotation.ResponseResult;
 import com.mushiny.workbin.application.WorkBinAppService;
 import com.mushiny.workbin.business.SchedulerBusiness;
 import com.mushiny.workbin.business.WcsBusiness;
@@ -55,10 +56,11 @@ public class WorkBinController {
      * @throws Exception
      */
     @PostMapping("/createInput")
-    public Result createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
+    @ResponseResult
+    public WorkBinTaskDTO createInput(@RequestBody WorkBinTaskDTO record) throws Exception {
         InputTaskDTO dto = new InputTaskDTO();
         dto.setTaskList(Arrays.asList(record));
-        return new Result().ok(workBinAppService.createTask(1, dto).getTaskList().get(0));
+        return workBinAppService.createTask(1, dto).getTaskList().get(0);
     }
 
     /**

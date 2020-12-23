@@ -54,7 +54,7 @@ public class ReceiveMsg {
 
         if (msg == null) {
             log.info("mq 接收数据为null");
-            return;i
+            return;
         }
 
         MonitorToteTaskStatusChange change = MQUtil.toObject(msg.getBody(), MonitorToteTaskStatusChange.class);
